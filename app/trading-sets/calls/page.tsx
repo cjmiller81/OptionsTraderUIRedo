@@ -5,8 +5,14 @@ import { Sidebar } from '@/components/sidebar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { useState } from 'react';
 
 export default function CallOptionSet() {
+  const [dteStart, setDteStart] = useState('0');
+  const [dteEnd, setDteEnd] = useState('32');
+
   return (
     <div className="min-h-screen bg-background">
       <MainNav />
@@ -53,7 +59,52 @@ export default function CallOptionSet() {
           </div>
         </div>
         <div className="p-8 pt-0">
-          {/* Main content will go here */}
+          <Button 
+            className="bg-[#2A9D8F] text-white shadow-lg hover:bg-[#2A9D8F]/90 text-xl font-semibold px-8 py-2 mb-6"
+          >
+            + Send Order
+          </Button>
+          
+          <div className="space-y-6">
+            <Card className="w-[500px] h-[300px] border-[#1A6D63] bg-[#2A2A2A] shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-lg font-medium">Option Details</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-2">
+                  <Input
+                    placeholder="Enter Ticker"
+                    className="w-[180px] bg-[#1E1E1E] border-0 text-white placeholder:text-gray-400"
+                  />
+                  <div className="flex items-center gap-2 ml-1">
+                    <span className="text-white text-xs whitespace-nowrap">DTE Range</span>
+                    <Input
+                      type="number"
+                      value={dteStart}
+                      onChange={(e) => setDteStart(e.target.value)}
+                      className="w-[60px] bg-[#1E1E1E] border-0 text-white"
+                    />
+                    <span className="text-white text-xs">to</span>
+                    <Input
+                      type="number"
+                      value={dteEnd}
+                      onChange={(e) => setDteEnd(e.target.value)}
+                      className="w-[60px] bg-[#1E1E1E] border-0 text-white"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="w-[500px] h-[300px] border-[#1A6D63] bg-[#2A2A2A] shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-lg font-medium">Option Filter</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {/* Option Filter content will go here */}
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </main>
     </div>

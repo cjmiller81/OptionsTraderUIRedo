@@ -16,6 +16,11 @@ export default function CallOptionSet() {
   const [requireActiveBid, setRequireActiveBid] = useState(false);
   const [baMaxEnabled, setBaMaxEnabled] = useState(false);
   const [baMaxValue, setBaMaxValue] = useState('20');
+  const [minContractAsk, setMinContractAsk] = useState('0.05');
+  const [tradeAsSet, setTradeAsSet] = useState(false);
+  const [minOpenInterest, setMinOpenInterest] = useState('150');
+  const [minVolume, setMinVolume] = useState('10');
+  const [baSpreadDiff, setBaSpreadDiff] = useState('10');
 
   return (
     <div className="min-h-screen bg-background">
@@ -70,7 +75,7 @@ export default function CallOptionSet() {
           </Button>
           
           <div className="space-y-6">
-            <Card className="w-[500px] h-[300px] border-[#1A6D63] bg-[#2A2A2A] shadow-lg">
+            <Card className="w-[500px] h-[340px] border-[#1A6D63] bg-[#2A2A2A] shadow-lg">
               <CardHeader>
                 <CardTitle className="text-lg font-medium">Option Details</CardTitle>
               </CardHeader>
@@ -98,46 +103,73 @@ export default function CallOptionSet() {
                       />
                     </div>
                   </div>
-                  <div className="flex items-center">
-                    <div className="flex items-center gap-2">
-                      <Checkbox
-                        id="requireActiveBid"
-                        checked={requireActiveBid}
-                        onCheckedChange={setRequireActiveBid}
-                        className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
-                      />
-                      <label
-                        htmlFor="requireActiveBid"
-                        className="text-sm text-white cursor-pointer"
-                      >
-                        Require Active Bid
-                      </label>
-                    </div>
-                    <div className="ml-auto flex items-center gap-2">
-                      <Checkbox
-                        id="baMaxOnOff"
-                        checked={baMaxEnabled}
-                        onCheckedChange={setBaMaxEnabled}
-                        className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
-                      />
-                      <div className="flex flex-col">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Checkbox
+                          id="requireActiveBid"
+                          checked={requireActiveBid}
+                          onCheckedChange={setRequireActiveBid}
+                          className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
+                        />
                         <label
-                          htmlFor="baMaxOnOff"
+                          htmlFor="requireActiveBid"
                           className="text-sm text-white cursor-pointer"
                         >
-                          B/A Max On/Off
+                          Require Active Bid
                         </label>
-                        <span className={`text-[11px] italic ${!baMaxEnabled ? 'text-gray-500' : 'text-gray-400'}`}>
-                          B/A Max (e.g 5 = 5%)
-                        </span>
                       </div>
-                      <Input
-                        type="number"
-                        value={baMaxValue}
-                        onChange={(e) => setBaMaxValue(e.target.value)}
-                        disabled={!baMaxEnabled}
-                        className={`w-[60px] bg-[#1E1E1E] border-0 text-white ${!baMaxEnabled && 'opacity-50'}`}
-                      />
+                      <div className="flex items-center gap-2">
+                        <Checkbox
+                          id="baMaxOnOff"
+                          checked={baMaxEnabled}
+                          onCheckedChange={setBaMaxEnabled}
+                          className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
+                        />
+                        <div className="flex flex-col">
+                          <label
+                            htmlFor="baMaxOnOff"
+                            className="text-sm text-white cursor-pointer"
+                          >
+                            B/A Max On/Off
+                          </label>
+                          <span className={`text-[11px] italic ${!baMaxEnabled ? 'text-gray-700' : 'text-gray-400'}`}>
+                            B/A Max (e.g 5 = 5%)
+                          </span>
+                        </div>
+                        <Input
+                          type="number"
+                          value={baMaxValue}
+                          onChange={(e) => setBaMaxValue(e.target.value)}
+                          disabled={!baMaxEnabled}
+                          className={`w-[60px] bg-[#1E1E1E] border-0 text-white ${!baMaxEnabled && 'opacity-30'}`}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <span className="text-sm text-white block">Min Contract Ask</span>
+                        <Input
+                          type="number"
+                          value={minContractAsk}
+                          onChange={(e) => setMinContractAsk(e.target.value)}
+                          className="w-[100px] bg-[#1E1E1E] border-0 text-white"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Checkbox
+                          id="tradeAsSet"
+                          checked={tradeAsSet}
+                          onCheckedChange={setTradeAsSet}
+                          className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
+                        />
+                        <label
+                          htmlFor="tradeAsSet"
+                          className="text-sm text-white cursor-pointer"
+                        >
+                          Trade As Set
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -149,7 +181,37 @@ export default function CallOptionSet() {
                 <CardTitle className="text-lg font-medium">Option Filter</CardTitle>
               </CardHeader>
               <CardContent>
-                {/* Option Filter content will go here */}
+                <div className="space-y-6">
+                  <div className="flex gap-8">
+                    <div className="space-y-2">
+                      <span className="text-sm text-white block">Min Open Interest</span>
+                      <Input
+                        type="number"
+                        value={minOpenInterest}
+                        onChange={(e) => setMinOpenInterest(e.target.value)}
+                        className="w-[100px] bg-[#1E1E1E] border-0 text-white"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <span className="text-sm text-white block">Min Volume</span>
+                      <Input
+                        type="number"
+                        value={minVolume}
+                        onChange={(e) => setMinVolume(e.target.value)}
+                        className="w-[100px] bg-[#1E1E1E] border-0 text-white"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <span className="text-sm text-white block">B/A Spread Diff (e.g 5 = 5%)</span>
+                    <Input
+                      type="number"
+                      value={baSpreadDiff}
+                      onChange={(e) => setBaSpreadDiff(e.target.value)}
+                      className="w-[100px] bg-[#1E1E1E] border-0 text-white"
+                    />
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>

@@ -109,7 +109,7 @@ export default function CallOptionSet() {
                         <Checkbox
                           id="requireActiveBid"
                           checked={requireActiveBid}
-                          onCheckedChange={setRequireActiveBid}
+                          onCheckedChange={(checked) => setRequireActiveBid(checked === true)}
                           className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
                         />
                         <label
@@ -123,7 +123,7 @@ export default function CallOptionSet() {
                         <Checkbox
                           id="baMaxOnOff"
                           checked={baMaxEnabled}
-                          onCheckedChange={setBaMaxEnabled}
+                          onCheckedChange={(checked) => setBaMaxEnabled(checked === true)}
                           className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
                         />
                         <div className="flex flex-col">
@@ -160,7 +160,7 @@ export default function CallOptionSet() {
                         <Checkbox
                           id="tradeAsSet"
                           checked={tradeAsSet}
-                          onCheckedChange={setTradeAsSet}
+                          onCheckedChange={(checked) => setTradeAsSet(checked === true)}
                           className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
                         />
                         <label

@@ -7,11 +7,15 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useState } from 'react';
 
 export default function CallOptionSet() {
   const [dteStart, setDteStart] = useState('0');
   const [dteEnd, setDteEnd] = useState('32');
+  const [requireActiveBid, setRequireActiveBid] = useState(false);
+  const [baMaxEnabled, setBaMaxEnabled] = useState(false);
+  const [baMaxValue, setBaMaxValue] = useState('20');
 
   return (
     <div className="min-h-screen bg-background">
@@ -71,26 +75,70 @@ export default function CallOptionSet() {
                 <CardTitle className="text-lg font-medium">Option Details</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center gap-2">
-                  <Input
-                    placeholder="Enter Ticker"
-                    className="w-[180px] bg-[#1E1E1E] border-0 text-white placeholder:text-gray-400"
-                  />
-                  <div className="flex items-center gap-2 ml-1">
-                    <span className="text-white text-xs whitespace-nowrap">DTE Range</span>
+                <div className="space-y-6">
+                  <div className="flex items-center gap-2">
                     <Input
-                      type="number"
-                      value={dteStart}
-                      onChange={(e) => setDteStart(e.target.value)}
-                      className="w-[60px] bg-[#1E1E1E] border-0 text-white"
+                      placeholder="Enter Ticker"
+                      className="w-[300px] bg-[#1E1E1E] border-0 text-white placeholder:text-gray-400"
                     />
-                    <span className="text-white text-xs">to</span>
-                    <Input
-                      type="number"
-                      value={dteEnd}
-                      onChange={(e) => setDteEnd(e.target.value)}
-                      className="w-[60px] bg-[#1E1E1E] border-0 text-white"
-                    />
+                    <div className="flex items-center gap-2 ml-4">
+                      <span className="text-white text-sm whitespace-nowrap">DTE Range</span>
+                      <Input
+                        type="number"
+                        value={dteStart}
+                        onChange={(e) => setDteStart(e.target.value)}
+                        className="w-[60px] bg-[#1E1E1E] border-0 text-white"
+                      />
+                      <span className="text-white text-sm">to</span>
+                      <Input
+                        type="number"
+                        value={dteEnd}
+                        onChange={(e) => setDteEnd(e.target.value)}
+                        className="w-[60px] bg-[#1E1E1E] border-0 text-white"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        id="requireActiveBid"
+                        checked={requireActiveBid}
+                        onCheckedChange={setRequireActiveBid}
+                        className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
+                      />
+                      <label
+                        htmlFor="requireActiveBid"
+                        className="text-sm text-white cursor-pointer"
+                      >
+                        Require Active Bid
+                      </label>
+                    </div>
+                    <div className="ml-auto flex items-center gap-2">
+                      <Checkbox
+                        id="baMaxOnOff"
+                        checked={baMaxEnabled}
+                        onCheckedChange={setBaMaxEnabled}
+                        className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
+                      />
+                      <div className="flex flex-col">
+                        <label
+                          htmlFor="baMaxOnOff"
+                          className="text-sm text-white cursor-pointer"
+                        >
+                          B/A Max On/Off
+                        </label>
+                        <span className={`text-[11px] italic ${!baMaxEnabled ? 'text-gray-500' : 'text-gray-400'}`}>
+                          B/A Max (e.g 5 = 5%)
+                        </span>
+                      </div>
+                      <Input
+                        type="number"
+                        value={baMaxValue}
+                        onChange={(e) => setBaMaxValue(e.target.value)}
+                        disabled={!baMaxEnabled}
+                        className={`w-[60px] bg-[#1E1E1E] border-0 text-white ${!baMaxEnabled && 'opacity-50'}`}
+                      />
+                    </div>
                   </div>
                 </div>
               </CardContent>

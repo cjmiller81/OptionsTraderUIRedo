@@ -9,6 +9,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useState } from 'react';
+import { NumericFormat } from 'react-number-format';
 
 export default function CallOptionSet() {
   const [dteStart, setDteStart] = useState('0');
@@ -21,6 +22,7 @@ export default function CallOptionSet() {
   const [minOpenInterest, setMinOpenInterest] = useState('150');
   const [minVolume, setMinVolume] = useState('10');
   const [baSpreadDiff, setBaSpreadDiff] = useState('10');
+  const [totalDollarAmount, setTotalDollarAmount] = useState('30000');
 
   return (
     <div className="min-h-screen bg-background">
@@ -74,141 +76,163 @@ export default function CallOptionSet() {
             + Send Order
           </Button>
           
-          <div className="space-y-6">
-            <Card className="w-[500px] h-[340px] border-[#1A6D63] bg-[#2A2A2A] shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-lg font-medium">Option Details</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  <div className="flex items-center gap-2">
-                    <Input
-                      placeholder="Enter Ticker"
-                      className="w-[300px] bg-[#1E1E1E] border-0 text-white placeholder:text-gray-400"
-                    />
-                    <div className="flex items-center gap-2 ml-4">
-                      <span className="text-white text-sm whitespace-nowrap">DTE Range</span>
+          <div className="flex gap-6">
+            <div className="space-y-6">
+              <Card className="w-[500px] h-[340px] border-[#1A6D63] bg-[#2A2A2A] shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-lg font-medium">Option Details</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-2">
                       <Input
-                        type="number"
-                        value={dteStart}
-                        onChange={(e) => setDteStart(e.target.value)}
-                        className="w-[60px] bg-[#1E1E1E] border-0 text-white"
+                        placeholder="Enter Ticker"
+                        className="w-[300px] bg-[#1E1E1E] border-0 text-white placeholder:text-gray-400"
                       />
-                      <span className="text-white text-sm">to</span>
-                      <Input
-                        type="number"
-                        value={dteEnd}
-                        onChange={(e) => setDteEnd(e.target.value)}
-                        className="w-[60px] bg-[#1E1E1E] border-0 text-white"
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Checkbox
-                          id="requireActiveBid"
-                          checked={requireActiveBid}
-                          onCheckedChange={(checked) => setRequireActiveBid(checked === true)}
-                          className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
-                        />
-                        <label
-                          htmlFor="requireActiveBid"
-                          className="text-sm text-white cursor-pointer"
-                        >
-                          Require Active Bid
-                        </label>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Checkbox
-                          id="baMaxOnOff"
-                          checked={baMaxEnabled}
-                          onCheckedChange={(checked) => setBaMaxEnabled(checked === true)}
-                          className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
-                        />
-                        <div className="flex flex-col">
-                          <label
-                            htmlFor="baMaxOnOff"
-                            className="text-sm text-white cursor-pointer"
-                          >
-                            B/A Max On/Off
-                          </label>
-                          <span className={`text-[11px] italic ${!baMaxEnabled ? 'text-gray-700' : 'text-gray-400'}`}>
-                            B/A Max (e.g 5 = 5%)
-                          </span>
-                        </div>
+                      <div className="flex items-center gap-2 ml-4">
+                        <span className="text-white text-sm whitespace-nowrap">DTE Range</span>
                         <Input
                           type="number"
-                          value={baMaxValue}
-                          onChange={(e) => setBaMaxValue(e.target.value)}
-                          disabled={!baMaxEnabled}
-                          className={`w-[60px] bg-[#1E1E1E] border-0 text-white ${!baMaxEnabled && 'opacity-30'}`}
+                          value={dteStart}
+                          onChange={(e) => setDteStart(e.target.value)}
+                          className="w-[60px] bg-[#1E1E1E] border-0 text-white"
+                        />
+                        <span className="text-white text-sm">to</span>
+                        <Input
+                          type="number"
+                          value={dteEnd}
+                          onChange={(e) => setDteEnd(e.target.value)}
+                          className="w-[60px] bg-[#1E1E1E] border-0 text-white"
                         />
                       </div>
                     </div>
                     <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Checkbox
+                            id="requireActiveBid"
+                            checked={requireActiveBid}
+                            onCheckedChange={(checked) => setRequireActiveBid(checked === true)}
+                            className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
+                          />
+                          <label
+                            htmlFor="requireActiveBid"
+                            className="text-sm text-white cursor-pointer"
+                          >
+                            Require Active Bid
+                          </label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Checkbox
+                            id="baMaxOnOff"
+                            checked={baMaxEnabled}
+                            onCheckedChange={(checked) => setBaMaxEnabled(checked === true)}
+                            className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
+                          />
+                          <div className="flex flex-col">
+                            <label
+                              htmlFor="baMaxOnOff"
+                              className="text-sm text-white cursor-pointer"
+                            >
+                              B/A Max On/Off
+                            </label>
+                            <span className={`text-[11px] italic ${!baMaxEnabled ? 'text-gray-700' : 'text-gray-400'}`}>
+                              B/A Max (e.g 5 = 5%)
+                            </span>
+                          </div>
+                          <Input
+                            type="number"
+                            value={baMaxValue}
+                            onChange={(e) => setBaMaxValue(e.target.value)}
+                            disabled={!baMaxEnabled}
+                            className={`w-[60px] bg-[#1E1E1E] border-0 text-white ${!baMaxEnabled && 'opacity-30'}`}
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <span className="text-sm text-white block">Min Contract Ask</span>
+                          <Input
+                            type="number"
+                            value={minContractAsk}
+                            onChange={(e) => setMinContractAsk(e.target.value)}
+                            className="w-[100px] bg-[#1E1E1E] border-0 text-white"
+                          />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Checkbox
+                            id="tradeAsSet"
+                            checked={tradeAsSet}
+                            onCheckedChange={(checked) => setTradeAsSet(checked === true)}
+                            className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
+                          />
+                          <label
+                            htmlFor="tradeAsSet"
+                            className="text-sm text-white cursor-pointer"
+                          >
+                            Trade As Set
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="w-[500px] h-[300px] border-[#1A6D63] bg-[#2A2A2A] shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-lg font-medium">Option Filter</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    <div className="flex gap-8">
                       <div className="space-y-2">
-                        <span className="text-sm text-white block">Min Contract Ask</span>
+                        <span className="text-sm text-white block">Min Open Interest</span>
                         <Input
                           type="number"
-                          value={minContractAsk}
-                          onChange={(e) => setMinContractAsk(e.target.value)}
+                          value={minOpenInterest}
+                          onChange={(e) => setMinOpenInterest(e.target.value)}
                           className="w-[100px] bg-[#1E1E1E] border-0 text-white"
                         />
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Checkbox
-                          id="tradeAsSet"
-                          checked={tradeAsSet}
-                          onCheckedChange={(checked) => setTradeAsSet(checked === true)}
-                          className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
+                      <div className="space-y-2">
+                        <span className="text-sm text-white block">Min Volume</span>
+                        <Input
+                          type="number"
+                          value={minVolume}
+                          onChange={(e) => setMinVolume(e.target.value)}
+                          className="w-[100px] bg-[#1E1E1E] border-0 text-white"
                         />
-                        <label
-                          htmlFor="tradeAsSet"
-                          className="text-sm text-white cursor-pointer"
-                        >
-                          Trade As Set
-                        </label>
                       </div>
                     </div>
+                    <div className="space-y-2">
+                      <span className="text-sm text-white block">B/A Spread Diff (e.g 5 = 5%)</span>
+                      <Input
+                        type="number"
+                        value={baSpreadDiff}
+                        onChange={(e) => setBaSpreadDiff(e.target.value)}
+                        className="w-[100px] bg-[#1E1E1E] border-0 text-white"
+                      />
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
 
-            <Card className="w-[500px] h-[300px] border-[#1A6D63] bg-[#2A2A2A] shadow-lg">
+            <Card className="w-[400px] h-[660px] border-[#1A6D63] bg-[#2A2A2A] shadow-lg">
               <CardHeader>
-                <CardTitle className="text-lg font-medium">Option Filter</CardTitle>
+                <CardTitle className="text-lg font-medium">Entry Order</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-6">
-                  <div className="flex gap-8">
-                    <div className="space-y-2">
-                      <span className="text-sm text-white block">Min Open Interest</span>
-                      <Input
-                        type="number"
-                        value={minOpenInterest}
-                        onChange={(e) => setMinOpenInterest(e.target.value)}
-                        className="w-[100px] bg-[#1E1E1E] border-0 text-white"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <span className="text-sm text-white block">Min Volume</span>
-                      <Input
-                        type="number"
-                        value={minVolume}
-                        onChange={(e) => setMinVolume(e.target.value)}
-                        className="w-[100px] bg-[#1E1E1E] border-0 text-white"
-                      />
-                    </div>
-                  </div>
+                <div className="space-y-4">
                   <div className="space-y-2">
-                    <span className="text-sm text-white block">B/A Spread Diff (e.g 5 = 5%)</span>
-                    <Input
-                      type="number"
-                      value={baSpreadDiff}
-                      onChange={(e) => setBaSpreadDiff(e.target.value)}
-                      className="w-[100px] bg-[#1E1E1E] border-0 text-white"
+                    <span className="text-sm text-white block">Total Dollar Amount</span>
+                    <NumericFormat
+                      value={totalDollarAmount}
+                      onValueChange={(values) => setTotalDollarAmount(values.value)}
+                      thousandSeparator=","
+                      customInput={Input}
+                      className="w-[150px] bg-[#1E1E1E] border-0 text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                   </div>
                 </div>

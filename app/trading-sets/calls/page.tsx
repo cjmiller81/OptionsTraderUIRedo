@@ -23,6 +23,9 @@ export default function CallOptionSet() {
   const [minVolume, setMinVolume] = useState('10');
   const [baSpreadDiff, setBaSpreadDiff] = useState('10');
   const [totalDollarAmount, setTotalDollarAmount] = useState('30000');
+  const [oiPercentCap, setOiPercentCap] = useState('10');
+  const [entryType, setEntryType] = useState('Buy_Ask');
+  const [offsetPercent, setOffsetPercent] = useState('10');
 
   return (
     <div className="min-h-screen bg-background">
@@ -219,20 +222,53 @@ export default function CallOptionSet() {
               </Card>
             </div>
 
-            <Card className="w-[400px] h-[660px] border-[#1A6D63] bg-[#2A2A2A] shadow-lg">
+            <Card className="w-[430px] h-[660px] border-[#1A6D63] bg-[#2A2A2A] shadow-lg">
               <CardHeader>
                 <CardTitle className="text-lg font-medium">Entry Order</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
+                  <div className="flex gap-8">
+                    <div className="space-y-2">
+                      <span className="text-sm text-white block">Total Dollar Amount</span>
+                      <NumericFormat
+                        value={totalDollarAmount}
+                        onValueChange={(values) => setTotalDollarAmount(values.value)}
+                        thousandSeparator=","
+                        customInput={Input}
+                        className="w-[150px] bg-[#1E1E1E] border-0 text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <span className="text-sm text-white block">OI Percent Cap (e.g 5 = 5%)</span>
+                      <Input
+                        type="number"
+                        value={oiPercentCap}
+                        onChange={(e) => setOiPercentCap(e.target.value)}
+                        className="w-[100px] bg-[#1E1E1E] border-0 text-white"
+                      />
+                    </div>
+                  </div>
                   <div className="space-y-2">
-                    <span className="text-sm text-white block">Total Dollar Amount</span>
-                    <NumericFormat
-                      value={totalDollarAmount}
-                      onValueChange={(values) => setTotalDollarAmount(values.value)}
-                      thousandSeparator=","
-                      customInput={Input}
-                      className="w-[150px] bg-[#1E1E1E] border-0 text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    <span className="text-sm text-white block">Entry Type</span>
+                    <Select value={entryType} onValueChange={setEntryType}>
+                      <SelectTrigger className="w-[150px] bg-[#1E1E1E] border-0 text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Buy_Bid">Buy_Bid</SelectItem>
+                        <SelectItem value="Buy_Mid">Buy_Mid</SelectItem>
+                        <SelectItem value="Buy_Ask">Buy_Ask</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <span className="text-sm text-white block">Offset Percent (e.g 5 = 5%)</span>
+                    <Input
+                      type="number"
+                      value={offsetPercent}
+                      onChange={(e) => setOffsetPercent(e.target.value)}
+                      className="w-[100px] bg-[#1E1E1E] border-0 text-white"
                     />
                   </div>
                 </div>

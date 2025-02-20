@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { NumericFormat } from 'react-number-format';
 
 export default function CallOptionSet() {
@@ -26,6 +26,18 @@ export default function CallOptionSet() {
   const [oiPercentCap, setOiPercentCap] = useState('10');
   const [entryType, setEntryType] = useState('Buy_Ask');
   const [offsetPercent, setOffsetPercent] = useState('10');
+  const [useLaddering, setUseLaddering] = useState(false);
+
+  const isLadderingDisabled = useMemo(() => {
+    return entryType === 'Buy_Ask' && parseFloat(offsetPercent) >= 0;
+  }, [entryType, offsetPercent]);
+
+  // Automatically uncheck "Use Laddering" when it becomes disabled
+  useEffect(() => {
+    if (isLadderingDisabled && useLaddering) {
+      setUseLaddering(false);
+    }
+  }, [isLadderingDisabled, useLaddering]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -251,16 +263,40 @@ export default function CallOptionSet() {
                   </div>
                   <div className="space-y-2">
                     <span className="text-sm text-white block">Entry Type</span>
-                    <Select value={entryType} onValueChange={setEntryType}>
-                      <SelectTrigger className="w-[150px] bg-[#1E1E1E] border-0 text-white">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Buy_Bid">Buy_Bid</SelectItem>
-                        <SelectItem value="Buy_Mid">Buy_Mid</SelectItem>
-                        <SelectItem value="Buy_Ask">Buy_Ask</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <div className="flex items-center gap-4">
+                      <Select value={entryType} onValueChange={setEntryType}>
+                        <SelectTrigger className="w-[150px] bg-[#1E1E1E] border-0 text-white">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Buy_Bid">Buy_Bid</SelectItem>
+                          <SelectItem value="Buy_Mid">Buy_Mid</SelectItem>
+                          <SelectItem value="Buy_Ask">Buy_Ask</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <div className="flex flex-col">
+                        <div className="flex items-center gap-2">
+                          <Checkbox
+                            id="useLaddering"
+                            checked={useLaddering}
+                            disabled={isLadderingDisabled}
+                            onCheckedChange={(checked) => setUseLaddering(checked === true)}
+                            className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F] disabled:opacity-50"
+                          />
+                          <label
+                            htmlFor="useLaddering"
+                            className={`text-sm cursor-pointer ${isLadderingDisabled ? 'text-gray-500' : 'text-white'}`}
+                          >
+                            Use Laddering?
+                          </label>
+                        </div>
+                        {isLadderingDisabled && (
+                          <span className="text-[11px] italic text-gray-500 mt-1">
+                            Offset must be &lt;0 if Buy_Ask
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <span className="text-sm text-white block">Offset Percent (e.g 5 = 5%)</span>

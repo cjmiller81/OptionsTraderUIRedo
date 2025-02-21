@@ -27,17 +27,41 @@ export default function CallOptionSet() {
   const [entryType, setEntryType] = useState('Buy_Ask');
   const [offsetPercent, setOffsetPercent] = useState('10');
   const [useLaddering, setUseLaddering] = useState(false);
+  const [tradeUnderlyingIfNoOption, setTradeUnderlyingIfNoOption] = useState(false);
+  const [onlyTradeUnderlying, setOnlyTradeUnderlying] = useState(false);
+  const [cancelAndResubmit, setCancelAndResubmit] = useState(false);
+  const [breakUpOrder, setBreakUpOrder] = useState(false);
+  const [orderBreaks, setOrderBreaks] = useState('20');
+  const [sendTriggerExitOrder, setSendTriggerExitOrder] = useState(false);
 
   const isLadderingDisabled = useMemo(() => {
     return entryType === 'Buy_Ask' && parseFloat(offsetPercent) >= 0;
   }, [entryType, offsetPercent]);
 
-  // Automatically uncheck "Use Laddering" when it becomes disabled
   useEffect(() => {
     if (isLadderingDisabled && useLaddering) {
       setUseLaddering(false);
     }
   }, [isLadderingDisabled, useLaddering]);
+
+  useEffect(() => {
+    if (onlyTradeUnderlying && !tradeUnderlyingIfNoOption) {
+      setTradeUnderlyingIfNoOption(true);
+    }
+  }, [onlyTradeUnderlying]);
+
+  const handleTradeUnderlyingIfNoOptionChange = (checked: boolean) => {
+    if (!onlyTradeUnderlying) {
+      setTradeUnderlyingIfNoOption(checked);
+    }
+  };
+
+  const handleOnlyTradeUnderlyingChange = (checked: boolean) => {
+    setOnlyTradeUnderlying(checked);
+    if (checked) {
+      setTradeUnderlyingIfNoOption(true);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -239,7 +263,7 @@ export default function CallOptionSet() {
                 <CardTitle className="text-lg font-medium">Entry Order</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <div className="flex gap-8">
                     <div className="space-y-2">
                       <span className="text-sm text-white block">Total Dollar Amount</span>
@@ -261,7 +285,7 @@ export default function CallOptionSet() {
                       />
                     </div>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2 pt-2">
                     <span className="text-sm text-white block">Entry Type</span>
                     <div className="flex items-center gap-4">
                       <Select value={entryType} onValueChange={setEntryType}>
@@ -298,7 +322,7 @@ export default function CallOptionSet() {
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2 pt-2">
                     <span className="text-sm text-white block">Offset Percent (e.g 5 = 5%)</span>
                     <Input
                       type="number"
@@ -306,6 +330,89 @@ export default function CallOptionSet() {
                       onChange={(e) => setOffsetPercent(e.target.value)}
                       className="w-[100px] bg-[#1E1E1E] border-0 text-white"
                     />
+                  </div>
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        id="tradeUnderlyingIfNoOption"
+                        checked={tradeUnderlyingIfNoOption}
+                        disabled={onlyTradeUnderlying}
+                        onCheckedChange={handleTradeUnderlyingIfNoOptionChange}
+                        className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F] disabled:opacity-50"
+                      />
+                      <label
+                        htmlFor="tradeUnderlyingIfNoOption"
+                        className={`text-sm cursor-pointer ${onlyTradeUnderlying ? 'text-gray-500' : 'text-white'}`}
+                      >
+                        Trade Underlying if no Option Found?
+                      </label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        id="onlyTradeUnderlying"
+                        checked={onlyTradeUnderlying}
+                        onCheckedChange={handleOnlyTradeUnderlyingChange}
+                        className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
+                      />
+                      <label
+                        htmlFor="onlyTradeUnderlying"
+                        className="text-sm text-white cursor-pointer"
+                      >
+                        Only Trade Underlying
+                      </label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        id="cancelAndResubmit"
+                        checked={cancelAndResubmit}
+                        onCheckedChange={(checked) => setCancelAndResubmit(checked === true)}
+                        className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
+                      />
+                      <label
+                        htmlFor="cancelAndResubmit"
+                        className="text-sm text-white cursor-pointer"
+                      >
+                        Cancel and Resubmit on No or Partial Fill?
+                      </label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        id="breakUpOrder"
+                        checked={breakUpOrder}
+                        onCheckedChange={(checked) => setBreakUpOrder(checked === true)}
+                        className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
+                      />
+                      <label
+                        htmlFor="breakUpOrder"
+                        className="text-sm text-white cursor-pointer"
+                      >
+                        Break-Up Order?
+                      </label>
+                      <span className={`text-[11px] italic ml-2 ${breakUpOrder ? 'text-white' : 'text-gray-500'}`}>
+                        Order Breaks
+                      </span>
+                      <Input
+                        type="number"
+                        value={orderBreaks}
+                        onChange={(e) => setOrderBreaks(e.target.value)}
+                        disabled={!breakUpOrder}
+                        className={`w-[60px] bg-[#1E1E1E] border-0 text-white ${!breakUpOrder && 'opacity-30'}`}
+                      />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        id="sendTriggerExitOrder"
+                        checked={sendTriggerExitOrder}
+                        onCheckedChange={(checked) => setSendTriggerExitOrder(checked === true)}
+                        className="bg-[#1E1E1E] border-gray-600 data-[state=checked]:bg-[#2A9D8F] data-[state=checked]:border-[#2A9D8F]"
+                      />
+                      <label
+                        htmlFor="sendTriggerExitOrder"
+                        className="text-sm text-white cursor-pointer"
+                      >
+                        Send Trigger Exit Order
+                      </label>
+                    </div>
                   </div>
                 </div>
               </CardContent>
